@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signUpAction } from '../actions';
+import { signUpAction } from '../../actions/auth';
 import Link from 'next/link';
 
 export default function SignUpPage() {

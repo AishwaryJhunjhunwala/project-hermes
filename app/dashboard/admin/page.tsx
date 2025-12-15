@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/auth/role-guards';
 import { db } from '@/lib/db';
 import { SignOutButton } from '@/components/SignOutButton';
+import { UsersManagement } from '@/components/admin/users-management';
 
 async function getStats() {
   const allUsers = await db.query.users.findMany({
@@ -65,28 +66,8 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        {/* Admin Actions */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Admin Actions</h2>
-          <div className="space-y-3">
-            <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-              <h3 className="font-medium">Manage Users</h3>
-              <p className="text-sm text-gray-600">View and manage user accounts and roles</p>
-            </div>
-            <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-              <h3 className="font-medium">Manage Startups</h3>
-              <p className="text-sm text-gray-600">Review and moderate startup profiles</p>
-            </div>
-            <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-              <h3 className="font-medium">Manage Investors</h3>
-              <p className="text-sm text-gray-600">Review and moderate investor profiles</p>
-            </div>
-            <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-              <h3 className="font-medium">Platform Settings</h3>
-              <p className="text-sm text-gray-600">Configure platform-wide settings</p>
-            </div>
-          </div>
-        </div>
+        {/* User Management */}
+        <UsersManagement />
       </main>
     </div>
   );

@@ -43,6 +43,7 @@ export const users = pgTable('users', {
   email: varchar('email', { length: 256 }).notNull().unique(),
   password: varchar('password', { length: 512 }).notNull(),
   name: varchar('name', { length: 256 }).notNull(),
+  isBanned: boolean('is_banned').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()

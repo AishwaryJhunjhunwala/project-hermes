@@ -35,6 +35,11 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        // Check if user is banned
+        if (user.isBanned) {
+          throw new Error('Your account has been banned. Please contact support.');
+        }
+
         // Verify password
         const isValidPassword = await comparePassword(password, user.password);
         if (!isValidPassword) {
