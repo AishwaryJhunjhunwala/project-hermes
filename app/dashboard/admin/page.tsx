@@ -1,7 +1,7 @@
 import { requireAdmin } from '@/lib/auth/role-guards';
 import { db } from '@/lib/db';
 import { SignOutButton } from '@/components/SignOutButton';
-import { UsersManagement } from '@/components/admin/users-management';
+import { AdminTabs } from '@/components/admin/admin-tabs';
 
 async function getStats() {
   const allUsers = await db.query.users.findMany({
@@ -66,8 +66,8 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        {/* User Management */}
-        <UsersManagement />
+        {/* Management Tabs */}
+        <AdminTabs />
       </main>
     </div>
   );

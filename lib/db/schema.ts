@@ -4,6 +4,13 @@ import { relations } from 'drizzle-orm';
 // Enums
 export const roleEnum = pgEnum('role', ['admin', 'investor', 'startup', 'normal_user']);
 
+export const applicationStatusEnum = pgEnum('application_status', [
+  'pending',
+  'approved',
+  'rejected',
+  'banned',
+]);
+
 export const businessStageEnum = pgEnum('business_stage', [
   'idea',
   'prototype',
@@ -37,6 +44,8 @@ export const stagePreferenceEnum = pgEnum('stage_preference', [
   'growth',
 ]);
 
+export const eventModeEnum = pgEnum('event_mode', ['online', 'offline']);
+
 // Tables
 export const users = pgTable('users', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -65,19 +74,36 @@ export const startups = pgTable('startups', {
   userId: integer('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
+
+  // Basic Information
   startupName: varchar('startup_name', { length: 256 }).notNull(),
   founderName: varchar('founder_name', { length: 256 }).notNull(),
-  phone: varchar('phone', { length: 20 }).notNull(),
+
+  // Contact Information
+  phone: varchar('phone', { length: 20 }).notNull(), // Founder's personal phone
+  contactPhone: varchar('contact_phone', { length: 20 }).notNull(), // Startup's main contact
+  contactEmail: varchar('contact_email', { length: 256 }).notNull(), // Startup's contact email
+
+  // Location
   city: varchar('city', { length: 100 }).notNull(),
   state: varchar('state', { length: 100 }).notNull(),
   country: varchar('country', { length: 100 }).notNull(),
+
+  // Business Details
   industrySectors: text('industry_sectors').array().notNull(),
   businessStage: businessStageEnum('business_stage').notNull(),
   fundingStatus: fundingStatusEnum('funding_status').notNull(),
   teamSize: integer('team_size').notNull(),
+
+  // Optional Information
   websiteUrl: varchar('website_url', { length: 512 }),
   socialHandle: varchar('social_handle', { length: 256 }),
   pitchDeckUrl: varchar('pitch_deck_url', { length: 512 }),
+
+  // Application Status
+  applicationStatus: applicationStatusEnum('application_status').default('pending').notNull(),
+  rejectionReason: text('rejection_reason'), // Admin feedback when rejecting
+
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -102,6 +128,11 @@ export const investors = pgTable('investors', {
   socialHandle: varchar('social_handle', { length: 256 }),
   pastInvestmentSummary: text('past_investment_summary'),
   availableForMentorship: boolean('available_for_mentorship').default(false).notNull(),
+
+  // Application Status
+  applicationStatus: applicationStatusEnum('application_status').default('pending').notNull(),
+  rejectionReason: text('rejection_reason'), // Admin feedback when rejecting
+
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -139,3 +170,17 @@ export const investorsRelations = relations(investors, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+// Events table
+export const events = pgTable('events', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar('name', { length: 256 }).notNull(),
+  description: text('description').notNull(),
+  date: varchar('date', { length: 50 }).notNull(), // Store as YYYY-MM-DD
+  time: varchar('time', { length: 50 }).notNull(), // Store as HH:MM
+  mode: eventModeEnum('mode').notNull().default('offline'),
+  location: text('location'), // For offline events
+  link: text('link'), // For online events
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});

@@ -1,8 +1,15 @@
 import { requireUser } from '@/lib/auth/role-guards';
 import { SignOutButton } from '@/components/SignOutButton';
+import Link from 'next/link';
+import { getUserInvestor } from '@/app/actions/investors';
+import { Badge } from '@/components/ui/badge';
 
 export default async function UserDashboard() {
   const session = await requireUser();
+
+  // TODO: Replace with actual user ID from session
+  const userId = 1;
+  const investorResult = await getUserInvestor(userId);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -46,9 +53,76 @@ export default async function UserDashboard() {
               <p className="text-gray-600 mb-4">
                 Connect with promising startups and explore investment opportunities
               </p>
-              <button className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-                Apply as Investor
-              </button>
+
+              {investorResult.success && investorResult.investor ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-sm font-medium">Application Status:</span>
+                    <Badge
+                      variant={
+                        investorResult.investor.applicationStatus === 'approved'
+                          ? 'default'
+                          : investorResult.investor.applicationStatus === 'pending'
+                            ? 'secondary'
+                            : 'destructive'
+                      }
+                    >
+                      {investorResult.investor.applicationStatus.charAt(0).toUpperCase() +
+                        investorResult.investor.applicationStatus.slice(1)}
+                    </Badge>
+                  </div>
+
+                  {investorResult.investor.applicationStatus === 'pending' && (
+                    <p className="text-sm text-muted-foreground">
+                      Your application is under review
+                    </p>
+                  )}
+
+                  {investorResult.investor.applicationStatus === 'approved' && (
+                    <p className="text-sm text-green-600 font-medium">
+                      🎉 Congratulations! You are now an approved investor
+                    </p>
+                  )}
+
+                  {investorResult.investor.applicationStatus === 'rejected' && (
+                    <div className="space-y-2">
+                      <p className="text-sm text-red-600">Your application was rejected</p>
+                      {investorResult.investor.rejectionReason && (
+                        <p className="text-sm text-muted-foreground italic">
+                          Reason: {investorResult.investor.rejectionReason}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {investorResult.investor.applicationStatus === 'banned' && (
+                    <div className="space-y-2">
+                      <p className="text-sm text-red-600 font-medium">
+                        Your application has been banned
+                      </p>
+                      {investorResult.investor.rejectionReason && (
+                        <p className="text-sm text-muted-foreground italic">
+                          Reason: {investorResult.investor.rejectionReason}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  <Link href="/dashboard/user/apply-investor">
+                    <button className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                      {investorResult.investor.applicationStatus === 'rejected'
+                        ? 'Reapply'
+                        : 'View Details'}
+                    </button>
+                  </Link>
+                </div>
+              ) : (
+                <Link href="/dashboard/user/apply-investor">
+                  <button className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                    Apply as Investor
+                  </button>
+                </Link>
+              )}
             </div>
           </div>
 
@@ -59,9 +133,11 @@ export default async function UserDashboard() {
               <p className="text-gray-600 mb-4">
                 Showcase your startup and connect with potential investors
               </p>
-              <button className="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
-                Register Startup
-              </button>
+              <Link href="/dashboard/user/apply-startup">
+                <button className="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                  Register Startup
+                </button>
+              </Link>
             </div>
           </div>
         </div>
