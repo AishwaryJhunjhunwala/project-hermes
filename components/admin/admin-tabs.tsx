@@ -6,7 +6,15 @@ import { StartupsManagement } from './startups-management';
 import { InvestorsManagement } from './investors-management';
 import { ApplicationsManagement } from './applications-management';
 import { EventsManagement } from './events-management';
-import { Users, Rocket, TrendingUp, FileText, CalendarDays } from 'lucide-react';
+import { MembersManagement } from './members-management';
+import {
+  Users,
+  Rocket,
+  TrendingUp,
+  FileText,
+  CalendarDays,
+  Users as MembersIcon,
+} from 'lucide-react';
 
 export function AdminTabs() {
   return (
@@ -37,6 +45,11 @@ export function AdminTabs() {
           <span className="hidden sm:inline">Events</span>
           <span className="sm:hidden">Events</span>
         </TabsTrigger>
+        <TabsTrigger value="members" className="flex items-center gap-2">
+          <MembersIcon className="h-4 w-4" />
+          <span className="hidden sm:inline">Manage Members</span>
+          <span className="sm:hidden">Members</span>
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="users" className="mt-0">
@@ -57,6 +70,10 @@ export function AdminTabs() {
 
       <TabsContent value="events" className="mt-0">
         <EventsManagement />
+      </TabsContent>
+
+      <TabsContent value="members" className="mt-0">
+        <MembersManagement />
       </TabsContent>
     </Tabs>
   );

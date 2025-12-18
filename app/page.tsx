@@ -16,6 +16,9 @@ const Home = async () => {
             Project Hermes
           </Link>
           <div className="flex gap-6 items-center">
+            <Link href="/members" className="text-slate-700 hover:text-slate-900 font-medium">
+              Team
+            </Link>
             <Link href="/startups" className="text-slate-700 hover:text-slate-900 font-medium">
               Startups
             </Link>
@@ -141,6 +144,9 @@ const Home = async () => {
         <div className="container mx-auto px-4 text-center text-slate-600">
           <p>&copy; 2025 Project Hermes. All rights reserved.</p>
           <div className="flex gap-6 justify-center mt-4">
+            <Link href="/members" className="hover:text-slate-900">
+              Team
+            </Link>
             <Link href="/startups" className="hover:text-slate-900">
               Startups
             </Link>
