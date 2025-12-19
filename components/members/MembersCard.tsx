@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
@@ -7,48 +8,42 @@ import type { Member } from '@/types/member';
 export default function MemberCard({ member }: { member: Member }) {
   const subtitle = member.memberType === 'EXECUTIVE' ? member.designation : member.role;
 
+  const isExternalImage =
+    typeof member.imageUrl === 'string' && /^https?:\/\//i.test(member.imageUrl);
+
+  const [externalImgSrc, setExternalImgSrc] = useState<string | undefined>(() =>
+    isExternalImage ? member.imageUrl : undefined
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.45,
-        ease: 'easeOut',
-      }}
-      whileHover={{
-        y: -4,
-        transition: { duration: 0.2, ease: 'easeOut' },
-      }}
-      className="
-        bg-white
-        rounded-3xl
-        shadow-sm
-        hover:shadow-xl
-        transition-all
-        overflow-hidden
-        w-full
-      "
+      transition={{ duration: 0.45, ease: 'easeOut' }}
+      whileHover={{ y: -6, transition: { duration: 0.2, ease: 'easeOut' } }}
+      className="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all overflow-hidden w-full"
     >
       {/* IMAGE */}
       <div className="relative">
-        {/* normalize src: allow absolute URLs or ensure leading slash for local images */}
-        {(() => {
-          const resolveSrc = (url?: string | null) => {
-            if (!url) return '/placeholder.jpg';
-            const t = url.trim();
-            if (/^https?:\/\//i.test(t)) return t;
-            return t.startsWith('/') ? t : '/' + t;
-          };
-          return (
-            <Image
-              src={resolveSrc(member.imageUrl)}
-              alt={member.name}
-              width={1200}
-              height={400}
-              className="h-60 w-full object-cover"
-            />
-          );
-        })()}
+        {isExternalImage ? (
+          <Image
+            src={externalImgSrc || '/placeholder.jpg'}
+            alt={member.name}
+            width={1200}
+            height={400}
+            className="h-60 w-full object-cover"
+            unoptimized
+            onError={() => setExternalImgSrc('/placeholder.jpg')}
+          />
+        ) : (
+          <Image
+            src={member.imageUrl || '/placeholder.jpg'}
+            alt={member.name}
+            width={1200}
+            height={400}
+            className="h-60 w-full object-cover"
+          />
+        )}
 
         {/* soft bottom fade */}
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-white to-transparent" />
@@ -62,7 +57,6 @@ export default function MemberCard({ member }: { member: Member }) {
 
         {/* icons */}
         <div className="flex justify-center gap-5 mt-5">
-          {/* LinkedIn ALWAYS visible */}
           <SocialIcon href={member.linkedinUrl || 'https://linkedin.com'}>
             <FaLinkedinIn />
           </SocialIcon>
@@ -86,16 +80,7 @@ function SocialIcon({ href, children }: { href: string; children: React.ReactNod
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="
-        flex items-center justify-center
-        w-11 h-11
-        rounded-full
-        bg-gray-50
-        text-gray-600
-        hover:bg-blue-50
-        hover:text-blue-600
-        transition
-      "
+      className="flex items-center justify-center w-11 h-11 rounded-full bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition"
     >
       {children}
     </a>
