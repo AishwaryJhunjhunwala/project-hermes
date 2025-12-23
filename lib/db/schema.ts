@@ -184,3 +184,20 @@ export const events = pgTable('events', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
+
+//members
+export const memberTypeEnum = pgEnum('member_type', ['EXECUTIVE', 'CORE']);
+
+export const members = pgTable('members', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  name: text('name').notNull(),
+  year: integer('year').notNull(),
+  memberType: memberTypeEnum('member_type').notNull(),
+  designation: text('designation'), // only for EXECUTIVE
+  role: text('role'), // only for CORE
+  imageUrl: text('image_url').notNull(),
+  linkedinUrl: text('linkedin_url'),
+  githubUrl: text('github_url'),
+  twitterUrl: text('twitter_url'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
