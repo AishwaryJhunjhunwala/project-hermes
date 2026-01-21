@@ -7,10 +7,17 @@ export default function MembersHeader() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="text-center max-w-5xl mx-auto mb-10 sm:mb-12"
+      className="text-left max-w-5xl mx-auto mb-16"
     >
-      <h1 className="text-4xl sm:text-5xl xl:text-6xl font-bold tracking-tight">
-        Our <span className="text-blue-600">Club Members</span>
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-12 h-[2px] bg-black" />
+        <span className="text-sm font-bold tracking-widest uppercase">Team</span>
+      </div>
+      <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-black mb-6">
+        Meet our{' '}
+        <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-purple-600">
+          Team
+        </span>
       </h1>
 
       <motion.p
@@ -18,13 +25,10 @@ export default function MembersHeader() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
         className="
-          mt-5
           text-gray-600
-          text-base
-          sm:text-lg
-          xl:text-xl
+          text-xl
           leading-relaxed
-          font-medium
+          max-w-2xl
         "
       >
         Meet the people who have shaped our community — leading teams, building systems, and growing

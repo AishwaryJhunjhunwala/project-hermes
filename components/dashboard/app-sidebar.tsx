@@ -9,6 +9,7 @@ import {
   Building2,
   Calendar,
   LogOut,
+  Rocket,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
@@ -100,6 +101,13 @@ export function AppSidebar({
           { title: 'Startups', url: '/dashboard/user/startups', icon: Building2 },
           { title: 'Investors', url: '/dashboard/user/investors', icon: Briefcase },
           { title: 'Events', url: '/dashboard/user/events', icon: Calendar },
+        ],
+      },
+      {
+        title: 'Join',
+        items: [
+          { title: 'Apply as Investor', url: '/dashboard/user/apply-investor', icon: Briefcase },
+          { title: 'Register Startup', url: '/dashboard/user/register-startup', icon: Rocket },
         ],
       },
     ],

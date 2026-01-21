@@ -43,8 +43,8 @@ export function LandingHero() {
       >
         E-CELL
         <br />
-        <span className="text-transparent [-webkit-text-stroke:2px_black] md:[-webkit-text-stroke:3px_black]">
-          NIT Rourkela
+        <span className="text-transparent [-webkit-text-stroke:2px_black] md:[-webkit-text-stroke:3px_black] tracking-wide">
+          NIT ROURKELA
         </span>
       </motion.h1>
 

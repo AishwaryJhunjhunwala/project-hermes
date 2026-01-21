@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { startups } from '@/lib/db/schema';
+import { startups, userRoles } from '@/lib/db/schema';
 import { eq, count, ilike, or, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import type { ApplicationStatus } from '@/types/startup';
@@ -112,6 +112,12 @@ export async function approveStartupApplication(startupId: number) {
       })
       .where(eq(startups.id, startupId))
       .returning();
+
+    // Assign startup role to user
+    await db.insert(userRoles).values({
+      userId: updated.userId,
+      role: 'startup',
+    });
 
     revalidatePath('/dashboard/admin');
     revalidatePath('/dashboard/user');

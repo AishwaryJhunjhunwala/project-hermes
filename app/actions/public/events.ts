@@ -84,3 +84,24 @@ export async function getAllPublicEvents() {
     };
   }
 }
+
+export async function getLatestEvents() {
+  try {
+    const latestEvents = await db.query.events.findMany({
+      orderBy: [desc(events.date), desc(events.time)],
+      limit: 5,
+    });
+
+    return {
+      success: true,
+      events: latestEvents,
+    };
+  } catch (error) {
+    console.error('Error fetching latest events:', error);
+    return {
+      success: false,
+      error: 'Failed to fetch latest events',
+      events: [],
+    };
+  }
+}

@@ -4,6 +4,7 @@ import { isAdmin, isInvestor, isStartup } from '@/lib/auth/role-utils';
 import Link from 'next/link';
 import type { Role } from '@/types/auth';
 import { SignOutButton } from '@/components/SignOutButton';
+import { Button } from '@/components/ui/button';
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -190,12 +191,16 @@ export default async function DashboardPage() {
               additional features and connect with the community.
             </p>
             <div className="flex gap-3">
-              <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm">
-                Apply as Investor
-              </button>
-              <button className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-sm">
-                Register Startup
-              </button>
+              <Link href="/dashboard/user/apply-investor">
+                <Button className="bg-green-600 hover:bg-green-700 text-white border-0">
+                  Apply as Investor
+                </Button>
+              </Link>
+              <Link href="/dashboard/user/register-startup">
+                <Button className="bg-purple-600 hover:bg-purple-700 text-white border-0">
+                  Register Startup
+                </Button>
+              </Link>
             </div>
           </div>
         )}

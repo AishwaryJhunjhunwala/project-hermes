@@ -20,18 +20,17 @@ export default function MemberCard({ member }: { member: Member }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: 'easeOut' }}
-      whileHover={{ y: -6, transition: { duration: 0.2, ease: 'easeOut' } }}
-      className="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all overflow-hidden w-full"
+      whileHover={{ y: -8 }}
+      className="group bg-white rounded-3xl shadow-[0_2px_10px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden w-full border border-gray-100"
     >
       {/* IMAGE */}
-      <div className="relative">
+      <div className="relative overflow-hidden aspect-4/5">
         {isExternalImage ? (
           <Image
             src={externalImgSrc || '/placeholder.jpg'}
             alt={member.name}
-            width={1200}
-            height={400}
-            className="h-60 w-full object-cover"
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
             unoptimized
             onError={() => setExternalImgSrc('/placeholder.jpg')}
           />
@@ -39,36 +38,40 @@ export default function MemberCard({ member }: { member: Member }) {
           <Image
             src={member.imageUrl || '/placeholder.jpg'}
             alt={member.name}
-            width={1200}
-            height={400}
-            className="h-60 w-full object-cover"
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         )}
 
-        {/* soft bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-white to-transparent" />
+        {/* Social Overlay on Hover */}
+        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+          <div className="flex gap-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+            {member.linkedinUrl && (
+              <SocialIcon href={member.linkedinUrl}>
+                <FaLinkedinIn />
+              </SocialIcon>
+            )}
+            {member.githubUrl && (
+              <SocialIcon href={member.githubUrl}>
+                <FaGithub />
+              </SocialIcon>
+            )}
+            {member.twitterUrl && (
+              <SocialIcon href={member.twitterUrl}>
+                <FaXTwitter />
+              </SocialIcon>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* CONTENT */}
-      <div className="px-6 pb-6 text-center">
-        <h3 className="text-lg xl:text-xl font-semibold tracking-tight">{member.name}</h3>
+      <div className="p-5 text-center bg-white relative z-10">
+        <h3 className="text-lg font-bold tracking-tight text-gray-900 group-hover:text-blue-600 transition-colors">
+          {member.name}
+        </h3>
 
-        {subtitle && <p className="mt-1 text-sm xl:text-base text-gray-500">{subtitle}</p>}
-
-        {/* icons */}
-        <div className="flex justify-center gap-5 mt-5">
-          <SocialIcon href={member.linkedinUrl || 'https://linkedin.com'}>
-            <FaLinkedinIn />
-          </SocialIcon>
-
-          <SocialIcon href={member.githubUrl || 'https://github.com'}>
-            <FaGithub />
-          </SocialIcon>
-
-          <SocialIcon href={member.twitterUrl || 'https://twitter.com'}>
-            <FaXTwitter />
-          </SocialIcon>
-        </div>
+        {subtitle && <p className="mt-1 text-sm font-medium text-gray-500">{subtitle}</p>}
       </div>
     </motion.div>
   );
@@ -80,7 +83,7 @@ function SocialIcon({ href, children }: { href: string; children: React.ReactNod
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center justify-center w-11 h-11 rounded-full bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition"
+      className="flex items-center justify-center w-10 h-10 rounded-full bg-white text-black hover:bg-black hover:text-white transition-all duration-300 shadow-lg"
     >
       {children}
     </a>

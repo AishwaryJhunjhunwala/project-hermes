@@ -201,3 +201,26 @@ export const members = pgTable('members', {
   twitterUrl: text('twitter_url'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
+
+export const speakers = pgTable('speakers', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar('name', { length: 256 }).notNull(),
+  designation: varchar('designation', { length: 256 }).notNull(),
+  company: varchar('company', { length: 256 }).notNull(),
+  imageUrl: text('image_url').notNull(),
+  linkedinUrl: text('linkedin_url'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const sessions = pgTable('sessions', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar('name', { length: 256 }).notNull(),
+  date: varchar('date', { length: 50 }).notNull(), // YYYY-MM-DD
+  startTime: varchar('start_time', { length: 50 }).notNull(), // HH:MM
+  endTime: varchar('end_time', { length: 50 }).notNull(), // HH:MM
+  location: text('location').notNull(),
+  mode: eventModeEnum('mode').notNull().default('offline'),
+  link: text('link'), // Optional link for online sessions
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});

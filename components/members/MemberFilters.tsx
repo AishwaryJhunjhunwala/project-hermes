@@ -50,17 +50,17 @@ function FilterButton({
     <button
       onClick={onClick}
       className={`
-        px-5 py-2.5
-        rounded-lg
+        px-6 py-3
+        rounded-xl
         border
-        text-sm sm:text-base
-        font-medium
-        transition ease
+        text-sm font-semibold
+        transition-all duration-300
         cursor-pointer
+        shadow-sm
         ${
           active
-            ? 'border-blue-500 bg-blue-50 text-blue-600'
-            : 'border-gray-300 text-gray-600 hover:bg-gray-100'
+            ? 'border-black bg-black text-white hover:bg-gray-800'
+            : 'border-white/50 bg-white/50 backdrop-blur-md text-gray-600 hover:bg-white hover:text-black hover:border-gray-200'
         }
       `}
     >

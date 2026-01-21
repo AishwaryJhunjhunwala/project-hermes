@@ -17,7 +17,7 @@ export function LandingAbout() {
           <div className="w-12 h-[2px] bg-gray-900" />
           <span className="text-sm font-bold tracking-widest uppercase">About Us</span>
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 leading-tight">
+        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 leading-tight">
           Fostering innovation, incubation, and entrepreneurship among students.
         </h2>
         <p className="text-lg md:text-xl text-gray-700 leading-relaxed">

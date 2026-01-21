@@ -1,13 +1,25 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { startups } from '@/lib/db/schema';
+import { startups, users } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import type { StartupFormData } from '@/types/startup';
 
 export async function submitStartupApplication(userId: number, data: StartupFormData) {
   try {
+    // Verify user exists
+    const existingUser = await db.query.users.findFirst({
+      where: eq(users.id, userId),
+    });
+
+    if (!existingUser) {
+      return {
+        success: false,
+        error: 'User account not found. Please try signing out and signing in again.',
+      };
+    }
+
     const [startup] = await db
       .insert(startups)
       .values({
@@ -94,5 +106,28 @@ export async function getStartupById(startupId: number, userId: number) {
   } catch (error) {
     console.error('Error fetching startup:', error);
     return { success: false, error: 'Failed to fetch startup' };
+  }
+}
+
+export async function getApprovedStartups() {
+  try {
+    const approvedStartups = await db.query.startups.findMany({
+      where: eq(startups.applicationStatus, 'approved'),
+      with: {
+        user: {
+          columns: {
+            name: true,
+            email: true,
+            id: true,
+          },
+        },
+      },
+      orderBy: (startups, { desc }) => [desc(startups.createdAt)],
+    });
+
+    return { success: true, startups: approvedStartups };
+  } catch (error) {
+    console.error('Error fetching approved startups:', error);
+    return { success: false, error: 'Failed to fetch startups', startups: [] };
   }
 }

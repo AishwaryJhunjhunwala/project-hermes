@@ -1,13 +1,25 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { investors } from '@/lib/db/schema';
+import { investors, users } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import type { InvestorFormData } from '@/types/investor';
 
 export async function submitInvestorApplication(userId: number, data: InvestorFormData) {
   try {
+    // Verify user exists
+    const existingUser = await db.query.users.findFirst({
+      where: eq(users.id, userId),
+    });
+
+    if (!existingUser) {
+      return {
+        success: false,
+        error: 'User account not found. Please try signing out and signing in again.',
+      };
+    }
+
     const [newInvestor] = await db
       .insert(investors)
       .values({
@@ -140,5 +152,28 @@ export async function getInvestorById(investorId: number, userId: number) {
       error: 'Failed to fetch investor',
       investor: null,
     };
+  }
+}
+
+export async function getApprovedInvestors() {
+  try {
+    const approvedInvestors = await db.query.investors.findMany({
+      where: eq(investors.applicationStatus, 'approved'),
+      with: {
+        user: {
+          columns: {
+            name: true,
+            email: true,
+            id: true,
+          },
+        },
+      },
+      orderBy: (investors, { desc }) => [desc(investors.createdAt)],
+    });
+
+    return { success: true, investors: approvedInvestors };
+  } catch (error) {
+    console.error('Error fetching approved investors:', error);
+    return { success: false, error: 'Failed to fetch investors', investors: [] };
   }
 }

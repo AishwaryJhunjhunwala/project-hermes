@@ -29,6 +29,20 @@
       "when": 1765985814179,
       "tag": "0003_outstanding_nebula",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1768586800805,
+      "tag": "0004_clean_dreaming_celestial",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1768709784120,
+      "tag": "0005_sturdy_ikaris",
+      "breakpoints": true
     }
   ]
 }

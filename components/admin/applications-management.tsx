@@ -34,17 +34,24 @@ interface StartupApplication {
   id: number;
   startupName: string;
   founderName: string;
-  email: string;
   phone: string;
+  contactPhone: string;
+  contactEmail: string;
   city: string;
   state: string;
   country: string;
-  industry: string;
-  stage: string;
-  fundingGoal: number;
-  website: string | null;
-  description: string;
+  industrySectors: string[];
+  businessStage: string;
+  fundingStatus: string;
+  teamSize: number;
+  websiteUrl: string | null;
+  socialHandle: string | null;
+  pitchDeckUrl: string | null;
   createdAt: Date;
+  user: {
+    email: string;
+    name: string;
+  };
 }
 
 interface InvestorApplication {
@@ -61,6 +68,10 @@ interface InvestorApplication {
   pastInvestmentSummary: string | null;
   availableForMentorship: boolean;
   createdAt: Date;
+  user: {
+    email: string;
+    name: string;
+  };
 }
 
 interface ViewDialogState {
@@ -170,6 +181,7 @@ export function ApplicationsManagement() {
   };
 
   const formatStage = (stage: string) => {
+    if (!stage) return 'Unknown';
     return stage
       .split('_')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -226,9 +238,15 @@ export function ApplicationsManagement() {
                     <TableCell className="font-medium">{startup.startupName}</TableCell>
                     <TableCell>{startup.founderName}</TableCell>
                     <TableCell>
-                      <Badge variant="outline">{startup.industry}</Badge>
+                      <div className="flex flex-wrap gap-1">
+                        {startup.industrySectors.map((sector) => (
+                          <Badge key={sector} variant="outline" className="text-xs">
+                            {sector}
+                          </Badge>
+                        ))}
+                      </div>
                     </TableCell>
-                    <TableCell>{formatStage(startup.stage)}</TableCell>
+                    <TableCell>{formatStage(startup.businessStage)}</TableCell>
                     <TableCell>
                       {startup.city}, {startup.state}
                     </TableCell>
@@ -386,7 +404,8 @@ export function ApplicationsManagement() {
                 const startup = viewDialog.data as StartupApplication;
                 return (
                   <>
-                    <div className="grid grid-cols-2 gap-4">
+                    <h4 className="text-lg font-semibold mb-2">Basic Info</h4>
+                    <div className="grid grid-cols-2 gap-4 mb-6">
                       <div>
                         <Label className="text-muted-foreground">Startup Name</Label>
                         <p className="font-medium">{startup.startupName}</p>
@@ -396,20 +415,28 @@ export function ApplicationsManagement() {
                         <p className="font-medium">{startup.founderName}</p>
                       </div>
                       <div>
-                        <Label className="text-muted-foreground">Email</Label>
-                        <p className="font-medium">{startup.email}</p>
+                        <Label className="text-muted-foreground">Registered Email</Label>
+                        <p className="font-medium">{startup.user.email}</p>
                       </div>
                       <div>
-                        <Label className="text-muted-foreground">Phone</Label>
+                        <Label className="text-muted-foreground">Team Size</Label>
+                        <p className="font-medium">{startup.teamSize}</p>
+                      </div>
+                    </div>
+
+                    <h4 className="text-lg font-semibold mb-2">Contact Details</h4>
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div>
+                        <Label className="text-muted-foreground">Business Email</Label>
+                        <p className="font-medium">{startup.contactEmail}</p>
+                      </div>
+                      <div>
+                        <Label className="text-muted-foreground">Business Phone</Label>
+                        <p className="font-medium">{startup.contactPhone}</p>
+                      </div>
+                      <div>
+                        <Label className="text-muted-foreground">Personal Phone</Label>
                         <p className="font-medium">{startup.phone}</p>
-                      </div>
-                      <div>
-                        <Label className="text-muted-foreground">Industry</Label>
-                        <p className="font-medium">{startup.industry}</p>
-                      </div>
-                      <div>
-                        <Label className="text-muted-foreground">Stage</Label>
-                        <p className="font-medium">{formatStage(startup.stage)}</p>
                       </div>
                       <div>
                         <Label className="text-muted-foreground">Location</Label>
@@ -417,29 +444,73 @@ export function ApplicationsManagement() {
                           {startup.city}, {startup.state}, {startup.country}
                         </p>
                       </div>
+                    </div>
+
+                    <h4 className="text-lg font-semibold mb-2">Business Details</h4>
+                    <div className="grid grid-cols-2 gap-4 mb-6">
                       <div>
-                        <Label className="text-muted-foreground">Funding Goal</Label>
-                        <p className="font-medium">${startup.fundingGoal.toLocaleString()}</p>
+                        <Label className="text-muted-foreground">Stage</Label>
+                        <p className="font-medium">{formatStage(startup.businessStage)}</p>
                       </div>
-                      {startup.website && (
-                        <div className="col-span-2">
-                          <Label className="text-muted-foreground">Website</Label>
-                          <p className="font-medium">
-                            <a
-                              href={startup.website}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 hover:underline"
-                            >
-                              {startup.website}
-                            </a>
-                          </p>
+                      <div>
+                        <Label className="text-muted-foreground">Funding Status</Label>
+                        <p className="font-medium capitalize">
+                          {startup.fundingStatus.replace('_', ' ')}
+                        </p>
+                      </div>
+                      <div className="col-span-2">
+                        <Label className="text-muted-foreground">Industry Sectors</Label>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {startup.industrySectors.map((s) => (
+                            <Badge key={s} variant="secondary">
+                              {s}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <h4 className="text-lg font-semibold mb-2">Resources</h4>
+                    <div className="space-y-3">
+                      {startup.websiteUrl && (
+                        <div>
+                          <Label className="text-muted-foreground block">Website</Label>
+                          <a
+                            href={startup.websiteUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {startup.websiteUrl}
+                          </a>
                         </div>
                       )}
-                    </div>
-                    <div>
-                      <Label className="text-muted-foreground">Description</Label>
-                      <p className="font-medium mt-1">{startup.description}</p>
+                      {startup.socialHandle && (
+                        <div>
+                          <Label className="text-muted-foreground block">Social Handle</Label>
+                          <a
+                            href={startup.socialHandle}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {startup.socialHandle}
+                          </a>
+                        </div>
+                      )}
+                      {startup.pitchDeckUrl && (
+                        <div>
+                          <Label className="text-muted-foreground block">Pitch Deck</Label>
+                          <a
+                            href={startup.pitchDeckUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {startup.pitchDeckUrl}
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </>
                 );

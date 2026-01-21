@@ -8,7 +8,7 @@ export function LandingStats() {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-      className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mt-20 pb-12 border-t border-black/5 pt-12"
+      className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mt-20 border-t border-black/5 pt-12"
     >
       {[
         { value: '8,000+', label: 'STUDENTS', sub: '' },
@@ -17,7 +17,7 @@ export function LandingStats() {
         { value: '100+', label: 'INVESTORS', sub: '' },
       ].map((stat, index) => (
         <motion.div key={index} whileHover={{ y: -5 }} className="space-y-2 group cursor-default">
-          <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter text-gray-900 group-hover:text-transparent group-hover:[-webkit-text-stroke:1px_black] transition-all duration-300">
+          <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter text-gray-900  transition-all duration-300">
             {stat.value}
           </h3>
           <div className="flex flex-col">

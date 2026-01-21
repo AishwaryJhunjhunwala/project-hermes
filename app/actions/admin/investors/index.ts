@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { investors } from '@/lib/db/schema';
+import { investors, userRoles } from '@/lib/db/schema';
 import { eq, count, ilike, or, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import type { ApplicationStatus } from '@/types/investor';
@@ -106,14 +106,23 @@ export async function getAllInvestorApplications(params: GetInvestorsParams = {}
 
 export async function approveInvestorApplication(investorId: number) {
   try {
-    await db
+    const updated = await db
       .update(investors)
       .set({
         applicationStatus: 'approved',
         rejectionReason: null,
         updatedAt: new Date(),
       })
-      .where(eq(investors.id, investorId));
+      .where(eq(investors.id, investorId))
+      .returning();
+
+    if (updated.length > 0) {
+      // Assign investor role to user
+      await db.insert(userRoles).values({
+        userId: updated[0].userId,
+        role: 'investor',
+      });
+    }
 
     revalidatePath('/dashboard/admin');
     revalidatePath('/dashboard/user');
